@@ -1,0 +1,201 @@
+_schema-version: '3.1'
+ID: ztch_cnf_01
+version: 1.0.0
+description: A simple CAP project.
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true
+  subdomain: cee015cetrial
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - rm -rf build/dist
+        - mkdir -p build/dist
+        - rm -rf build/ui-deployer
+        - mkdir -p build/ui-deployer
+    - builder: custom
+      commands:
+        - npm install --production
+        - >-
+          bash -c "cds -v | grep 'cds-dk' || npm i --production --no-save
+          @sap/cds-dk @sap/mdk-tools"
+        - bash -c "export PATH=$PATH:$(pwd)/node_modules/.bin"
+        - cds build --production
+  after-all:
+    - builder: custom
+      commands:
+        - npm install
+modules:
+  - name: ztch_cnf_01-db-deployer
+    type: hdb
+    path: gen/db
+    parameters:
+      buildpack: nodejs_buildpack
+    build-parameters:
+      builder: npm
+      ignore:
+        - node_modules
+        - package-lock.json
+    requires:
+      - name: ztch_cnf_01-service-uaa
+      - name: ztch_cnf_01-service-db
+  - name: ztch_cnf_01-srv
+    type: nodejs
+    path: gen/srv
+    parameters:
+      memory: 256MB
+    provides:
+      - name: srv-api
+        properties:
+          srv-url: ${default-url}
+    build-parameters:
+      builder: npm
+      ignore:
+        - node_modules
+        - package-lock.json
+    requires:
+      - name: ztch_cnf_01-service-uaa
+      - name: ztch_cnf_01-service-db
+      - name: ztch_cnf_01-service-destination
+      - name: ztch_cnf_01-service-metadata
+      - name: ztch_cnf_01-service-connectivity
+      - name: ztch_cnf_01-service-logs
+  - name: ztch_cnf_01-aux-destinations
+    type: com.sap.application.content
+    parameters:
+      content:
+        subaccount:
+          existing_destinations_policy: update
+          destinations:
+            - Authentication: OAuth2UserTokenExchange
+              Name: ztch_cnf_01-service-uaa
+              ServiceInstanceName: ztch_cnf_01-uaa
+              ServiceKeyName: ztch_cnf_01-uaa-key
+              sap.cloud.service: lcap.ztch_cnf_01
+            - Authentication: OAuth2UserTokenExchange
+              Name: ztch_cnf_01-app-srv
+              TokenServiceInstanceName: ztch_cnf_01-uaa
+              TokenServiceKeyName: ztch_cnf_01-uaa-key
+              URL: ~{srv-api/srv-url}
+              sap.cloud.service: lcap.ztch_cnf_01
+            - Name: ztch_cnf_01-service-html5-apps-repo-host
+              ServiceInstanceName: ztch_cnf_01-html5-apps-repo-host
+              ServiceKeyName: ztch_cnf_01-html5-apps-repo-host-key
+              sap.cloud.service: lcap.ztch_cnf_01
+            - Authentication: OAuth2UserTokenExchange
+              Name: ztch_cnf_01-admin
+              TokenServiceInstanceName: ztch_cnf_01-uaa
+              TokenServiceKeyName: ztch_cnf_01-uaa-key
+              URL: ~{srv-api/srv-url}/service/admin
+              sap.cloud.service: lcap.ztch_cnf_01
+              sap.applicationdevelopment.actions.enabled: false
+              sap.build.usage: CAP
+              sap.processautomation.enabled: false
+              HTML5.DynamicDestination: false
+              WebIDEEnabled: false
+              MobileEnabled: false
+              AppgyverEnabled: false
+    build-parameters:
+      no-source: true
+    requires:
+      - name: ztch_cnf_01-service-uaa
+        parameters:
+          service-key:
+            name: ztch_cnf_01-uaa-key
+      - name: srv-api
+      - name: ztch_cnf_01-service-html5-apps-repo-host
+        parameters:
+          service-key:
+            name: ztch_cnf_01-html5-apps-repo-host-key
+      - name: ztch_cnf_01-service-destination
+        parameters:
+          content-target: true
+  - name: ztch_cnf_01-launchpad
+    type: html5
+    path: build/launchpad
+    build-parameters:
+      builder: custom
+      commands:
+        - npm install
+        - >-
+          npx -p @ui5/cli@^3.0.0 ui5 build --dest dist
+          --include-task=generateCachebusterInfo
+        - bash -c "cd dist && npx bestzip ../../../build/dist/launchpad.zip *"
+        - rm -rf dist
+      _artifactName: launchpad.zip
+      supported-platforms: []
+      build-result: ../../build/dist
+  - name: ztch_cnf_01-aux-ui-deployer
+    type: com.sap.application.content
+    path: build/ui-deployer
+    build-parameters:
+      build-result: resources
+      requires:
+        - name: ztch_cnf_01-launchpad
+          artifacts:
+            - launchpad.zip
+          target-path: resources
+    requires:
+      - name: ztch_cnf_01-service-html5-apps-repo-host
+        parameters:
+          content-target: true
+resources:
+  - type: org.cloudfoundry.managed-service
+    name: ztch_cnf_01-service-uaa
+    parameters:
+      service: xsuaa
+      service-plan: application
+      service-name: ztch_cnf_01-uaa
+      path: xs-security.json
+      config:
+        oauth2-configuration:
+          redirect-uris:
+            - https://${subdomain}.launchpad.${default-domain}/login/*
+            - https://${subdomain}.${default-domain}/login/*
+          credential-types:
+            - binding-secret
+            - x509
+        xsappname: ztch_cnf_01-${space}
+        role-collections: []
+  - type: org.cloudfoundry.managed-service
+    name: ztch_cnf_01-service-db
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+      service-name: ztch_cnf_01-db
+  - type: org.cloudfoundry.managed-service
+    name: ztch_cnf_01-service-destination
+    parameters:
+      service: destination
+      service-plan: lite
+      service-name: ztch_cnf_01-destination
+      config:
+        HTML5Runtime_enabled: true
+        version: 1.0.0
+  - type: org.cloudfoundry.user-provided-service
+    name: ztch_cnf_01-service-metadata
+    parameters:
+      service: metadata
+      service-plan: standard
+      service-name: ztch_cnf_01-metadata
+      config:
+        default-domain: ${default-domain}
+  - type: org.cloudfoundry.managed-service
+    name: ztch_cnf_01-service-connectivity
+    parameters:
+      service: connectivity
+      service-plan: lite
+      service-name: ztch_cnf_01-connectivity
+  - type: org.cloudfoundry.managed-service
+    name: ztch_cnf_01-service-logs
+    parameters:
+      service: application-logs
+      service-plan: lite
+      service-name: ztch_cnf_01-logs
+  - type: org.cloudfoundry.managed-service
+    name: ztch_cnf_01-service-html5-apps-repo-host
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-host
+      service-name: ztch_cnf_01-html5-apps-repo-host

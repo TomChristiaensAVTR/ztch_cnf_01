@@ -1,0 +1,26 @@
+## Hybrid Testing - see below
+// See https://community.sap.com/t5/technology-blogs-by-members/sap-cap-hybrid-testing/ba-p/13556582
+
+# In the following requests the variable baseUrl is used.
+# Its value is set here.
+@baseUrl = http://localhost:4004
+
+### Northwind - Orders - HTTPS - V2
+GET https://Northwind.dest/v2/northwind/northwind.svc/Orders?$format=json
+Content-Type: application/json
+
+### Northwind - Orders - HTTP - V2
+GET http://Northwind.dest/v2/northwind/northwind.svc/Orders?$format=json
+Content-Type: application/json
+
+### Northwind - Orders - HTTPS - V4
+GET https://Northwind.dest/v4/northwind/northwind.svc/Orders?$format=json
+Content-Type: application/json
+
+### Northwind - Orders - HTTP - V4
+GET http://Northwind.dest/v4/northwind/northwind.svc/Orders?$format=json
+Content-Type: application/json
+
+### 
+
+GET {{baseUrl}}//service/catalog/Products
