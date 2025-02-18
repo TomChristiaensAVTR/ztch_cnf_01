@@ -15,15 +15,21 @@ entity Confirmations : cuid, managed {
   Description : String(255);
   @mandatory
   @title : 'User'
-  User: Association to one Users;
+  _User: Association to one Users;
   @title : 'Plant'
-  Plant : Association to one Plants;
+  _Plant : Association to one Plants;
   @title : 'Location'
-  Location : Association to one Locations;
+  _Location : Association to one Locations;
   @assert.target
   @mandatory
   @title : 'Type of Work'
-  WorkType: Association to one CnfWorkTypes;  
+  _WorkType: Association to one CnfWorkTypes;  
+  @title : 'Production Order'
+  DirOrder : String(10);
+  @title : 'Production Order Operation'
+  DirTask : String(10);
+  @title : 'Start Date/Time'
+  _IndTask : Association to CnfIndLabTasks;
   @title : 'Start Date/Time'
   StartTime : Timestamp;
   @title : 'End Date/Time'
@@ -31,7 +37,7 @@ entity Confirmations : cuid, managed {
   @assert.target
   @mandatory  
   @title : 'Status'
-  Status : Association to one CnfStatusses;
+  _Status : Association to one CnfStatusses;
 }
 
 entity CnfIndLabTasks : CodeList, managed {
@@ -40,6 +46,7 @@ entity CnfIndLabTasks : CodeList, managed {
 
 entity CnfWorkTypes : CodeList, managed {
   key code : String(10);
+  fieldControl : Integer;
 }
 
 type Status : String enum {
@@ -50,7 +57,8 @@ type Status : String enum {
   } default 'Started';
 
 entity CnfStatusses : CodeList, managed {
-  key code : String(10) default '10';  
+  key code : String(10) default '10';
+  txtfieldControl : Integer;  
 }
 
 annotate Confirmations{
@@ -65,24 +73,34 @@ entity Users : cuid, managed {
   LastName : String(100);
   @mandatory
   @title : 'E-mail'
+  @assert.format : '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
   Email : String(255);
   @mandatory
   @title : 'Workday ID'
   WorkDayID : String(50);
   @title : 'User TimeZone'
-  Timezone : Association to Timezones;
+  _Timezone : Association to one Timezones;
   @mandatory
   @title : 'User Language'
   Language: Language;
   @title : 'User Site/Plant'
-  AssignedPlant: Association to one Plants;
+  @mandatory
+  @assert.target
+  _DefaultPlant: Association to one Plants;
   @title : 'Default Location'
-  DefaultLocation : Association to one Locations;
+  @mandatory
+  @assert.target
+  _DefaultLocation : Association to one Locations;
 }
 
 annotate Users with @assert.unique :
 {
     UserWorkDayID : [ WorkDayID ],
+};
+
+annotate Users {
+   @Core.Computed
+   ID;
 };
 
 entity Plants : CodeList, managed {
@@ -92,6 +110,6 @@ entity Plants : CodeList, managed {
 entity Locations : CodeList, managed {
   key code : String(10);
   @title : 'Location Plant'
-  Plant : Association to one Plants;
+  _Plant : Association to one Plants;
 }
 
