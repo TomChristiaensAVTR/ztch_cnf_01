@@ -13,6 +13,12 @@
       "authenticationType": "xsuaa"
     },
     {
+      "source": "^/service/catalog/(.*)$",
+      "target": "/service/catalog/$1",
+      "destination": "ztch_cnf_01-app-srv",
+      "authenticationType": "xsuaa"
+    },
+    {
       "source": "^/index.html$",
       "target": "/index.html",
       "service": "html5-apps-repo-rt",

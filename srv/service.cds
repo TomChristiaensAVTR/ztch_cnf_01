@@ -27,22 +27,17 @@ annotate CatalogService with @requires :
 @path : '/service/admin'
 service admin
 {
+    @odata.draft.bypass
     @odata.draft.enabled
-    entity WorkTypes as
-        projection on my.WorkTypes;
+    entity CnfWorkTypes as
+        projection on my.CnfWorkTypes;
 
+    @odata.draft.bypass
     @odata.draft.enabled
-    entity Users as
-        projection on my.Users;
+    entity CnfStatusses as
+        projection on my.CnfStatusses;
 
-    @odata.draft.enabled
-    entity Plants as
-        projection on my.Plants;
-
-    @odata.draft.enabled
-    entity Locations as
-        projection on my.Locations;
-
+    @odata.draft.bypass
     @odata.draft.enabled
     entity Confirmations as
         projection on my.Confirmations
@@ -50,7 +45,28 @@ service admin
         {
             action Start();
             action Stop();
+            action Cancel();
         };
+
+    @odata.draft.bypass
+    @odata.draft.enabled
+    entity CnfIndLabTasks as
+        projection on my.CnfIndLabTasks;   
+
+    @odata.draft.bypass
+    @odata.draft.enabled
+    entity Users as
+        projection on my.Users;
+
+    @odata.draft.bypass
+    @odata.draft.enabled
+    entity Plants as
+        projection on my.Plants;
+
+    @odata.draft.bypass
+    @odata.draft.enabled
+    entity Locations as
+        projection on my.Locations;        
 }
 
 annotate admin with @requires :

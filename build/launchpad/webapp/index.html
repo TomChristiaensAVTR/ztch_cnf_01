@@ -27,7 +27,7 @@
                     return Controller.extend("PreviewController", {
                         onInit: function () {
 
-                            const data = {"Services":[{"ServiceName":"admin","DetailsURL":"./service/admin/","Metadata":"./service/admin/$metadata","Entities":[{"Name":"WorkTypes","URL":"./service/admin/WorkTypes","FioriURL":""},{"Name":"Users","URL":"./service/admin/Users","FioriURL":""},{"Name":"Plants","URL":"./service/admin/Plants","FioriURL":""},{"Name":"Locations","URL":"./service/admin/Locations","FioriURL":""},{"Name":"Confirmations","URL":"./service/admin/Confirmations","FioriURL":""}],"EntitiesCount":5}]}
+                            const data = {"Services":[{"ServiceName":"CatalogService","DetailsURL":"./service/catalog/","Metadata":"./service/catalog/$metadata","Entities":[{"Name":"Products","URL":"./service/catalog/Products","FioriURL":""}],"EntitiesCount":1},{"ServiceName":"admin","DetailsURL":"./service/admin/","Metadata":"./service/admin/$metadata","Entities":[{"Name":"CnfWorkTypes","URL":"./service/admin/CnfWorkTypes","FioriURL":""},{"Name":"CnfStatusses","URL":"./service/admin/CnfStatusses","FioriURL":""},{"Name":"Confirmations","URL":"./service/admin/Confirmations","FioriURL":""},{"Name":"CnfIndLabTasks","URL":"./service/admin/CnfIndLabTasks","FioriURL":""},{"Name":"Users","URL":"./service/admin/Users","FioriURL":""},{"Name":"Plants","URL":"./service/admin/Plants","FioriURL":""},{"Name":"Locations","URL":"./service/admin/Locations","FioriURL":""}],"EntitiesCount":7}]}
                             this.getView().setModel(new JSONModel(data));
                         }
                     });

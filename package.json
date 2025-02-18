@@ -27,8 +27,7 @@
     "start": "cds-serve",
     "start-local": "npm run generate-entry-point && npm run cds-watch",
     "generate-entry-point": "dev-cap-tools gen-entrypoint",
-    "cds-watch": "cds watch --open",
-    "watch-ztch_cnf_01.confirmations": "cds watch --open ztch_cnf_01.confirmations/webapp/index.html?sap-ui-xx-viewCache=false"
+    "cds-watch": "cds watch --open"
   },
   "cds": {
     "sql": {
@@ -61,8 +60,5 @@
       }
     }
   },
-  "lcap": true,
-  "sapux": [
-    "app/ztch_cnf_01.confirmations"
-  ]
+  "lcap": true
 }

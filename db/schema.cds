@@ -14,19 +14,43 @@ using {
 entity Confirmations : cuid, managed {
   Description : String(255);
   @mandatory
+  @title : 'User'
   User: Association to one Users;
+  @title : 'Plant'
+  Plant : Association to one Plants;
+  @title : 'Location'
+  Location : Association to one Locations;
   @assert.target
   @mandatory
-  WorkType: Association to one WorkTypes;  
-  @mandatory
+  @title : 'Type of Work'
+  WorkType: Association to one CnfWorkTypes;  
+  @title : 'Start Date/Time'
   StartTime : Timestamp;
+  @title : 'End Date/Time'
   EndTime : Timestamp;
-  Status : String enum {
+  @assert.target
+  @mandatory  
+  @title : 'Status'
+  Status : Association to one CnfStatusses;
+}
+
+entity CnfIndLabTasks : CodeList, managed {
+  key code : String(10);
+}
+
+entity CnfWorkTypes : CodeList, managed {
+  key code : String(10);
+}
+
+type Status : String enum {
     Started; 
     InProgress; 
     Completed; 
     Canceled;
   } default 'Started';
+
+entity CnfStatusses : CodeList, managed {
+  key code : String(10) default '10';  
 }
 
 annotate Confirmations{
@@ -61,11 +85,7 @@ annotate Users with @assert.unique :
     UserWorkDayID : [ WorkDayID ],
 };
 
-entity WorkTypes : CodeList, managed {
-  key code : String(10);
-}
-
-entity Plants : CodeList{
+entity Plants : CodeList, managed {
   key code : String(10);
 }
 
