@@ -46,8 +46,15 @@ entity CnfIndLabTasks : CodeList, managed {
 
 entity CnfWorkTypes : CodeList, managed {
   key code : String(10);
-  fieldControl : Integer;
+  directfieldControl : Integer;
+  indirectfieldcontrol : Integer;
 }
+
+// fieldcontrol - More information
+// 7 - Mandatory
+// 3 - Optional
+// 1 - Read Only
+// 0 - Hidden/Inapplicable 
 
 type Status : String enum {
     Started; 
@@ -58,7 +65,9 @@ type Status : String enum {
 
 entity CnfStatusses : CodeList, managed {
   key code : String(10) default '10';
-  txtfieldControl : Integer;  
+  fieldControl : Integer;
+  startActionControl : Boolean;
+  stopActionControl : Boolean;  
 }
 
 annotate Confirmations{
