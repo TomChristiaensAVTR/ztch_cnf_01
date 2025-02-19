@@ -12,6 +12,7 @@ using {
 } from '@sap/cds/common';
 
 entity Confirmations : cuid, managed {
+  @title : 'Description'
   Description : String(255);
   @mandatory
   @title : 'User'
