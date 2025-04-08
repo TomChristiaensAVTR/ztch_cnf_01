@@ -1,0 +1,2 @@
+sap.ui.require(["sap/fe/test/JourneyRunner","ztchcnf01/conf01/test/integration/FirstJourney","ztchcnf01/conf01/test/integration/pages/ConfirmationsList","ztchcnf01/conf01/test/integration/pages/ConfirmationsObjectPage"],function(n,t,e,i){"use strict";var n=new n({launchUrl:sap.ui.require.toUrl("ztchcnf01/conf01")+"/index.html"});n.run({pages:{onTheConfirmationsList:e,onTheConfirmationsObjectPage:i}},t.run)});
+//# sourceMappingURL=opaTests.qunit.js.map

@@ -19,7 +19,7 @@ build-parameters:
         - npm install --production
         - >-
           bash -c "cds -v | grep 'cds-dk' || npm i --production --no-save
-          @sap/cds-dk @sap/mdk-tools"
+          @sap/cds-dk"
         - bash -c "export PATH=$PATH:$(pwd)/node_modules/.bin"
         - cds build --production
   after-all:
@@ -27,9 +27,9 @@ build-parameters:
       commands:
         - npm install
 modules:
-  - name: ztch_cnf_01-ztchcnf01.confirmations
+  - name: ztch_cnf_01-ztchcnf01.conf01
     type: html5
-    path: app/ztch_cnf_01.confirmations
+    path: app/ztch_cnf_01.conf01
     build-parameters:
       builder: custom
       commands:
@@ -39,10 +39,8 @@ modules:
           npx -p @ui5/cli@^3.0.0 ui5 build --dest dist
           --include-task=generateCachebusterInfo
         - mkdir dist-zip
-        - >-
-          bash -c "cd dist && npx bestzip ../dist-zip/ztchcnf01confirmations.zip
-          *"
-      _artifactName: ztchcnf01confirmations.zip
+        - bash -c "cd dist && npx bestzip ../dist-zip/ztchcnf01conf01.zip *"
+      _artifactName: ztchcnf01conf01.zip
       supported-platforms: []
       build-result: dist-zip
   - name: ztch_cnf_01-db-deployer
@@ -163,9 +161,9 @@ modules:
     build-parameters:
       build-result: resources
       requires:
-        - name: ztch_cnf_01-ztchcnf01.confirmations
+        - name: ztch_cnf_01-ztchcnf01.conf01
           artifacts:
-            - ztchcnf01confirmations.zip
+            - ztchcnf01conf01.zip
           target-path: resources
         - name: ztch_cnf_01-launchpad
           artifacts:

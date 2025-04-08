@@ -23,13 +23,13 @@ entity Confirmations : cuid, managed {
   _Location : Association to one Locations;
   @assert.target
   @mandatory
-  @title : 'Type of Work'
+  @title : 'Type of Work (Direct/Indirect)'
   _WorkType: Association to one CnfWorkTypes;  
   @title : 'Production Order'
   DirOrder : String(10);
   @title : 'Production Order Operation'
   DirTask : String(10);
-  @title : 'Start Date/Time'
+  @title : 'Indirect Labour Task'
   _IndTask : Association to CnfIndLabTasks;
   @title : 'Start Date/Time'
   StartTime : Timestamp;
@@ -43,6 +43,8 @@ entity Confirmations : cuid, managed {
 
 entity CnfIndLabTasks : CodeList, managed {
   key code : String(10);
+  directfieldControl : Integer;
+  indirectfieldcontrol : Integer;  
 }
 
 entity CnfWorkTypes : CodeList, managed {
@@ -114,10 +116,12 @@ annotate Users {
 };
 
 entity Plants : CodeList, managed {
+  @ttile: 'Plant ID'
   key code : String(10);
 }
 
 entity Locations : CodeList, managed {
+  @ttile: 'Location ID'
   key code : String(10);
   @title : 'Location Plant'
   _Plant : Association to one Plants;

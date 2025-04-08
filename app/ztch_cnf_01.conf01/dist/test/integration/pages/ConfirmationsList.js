@@ -1,0 +1,2 @@
+sap.ui.define(["sap/fe/test/ListReport"],function(t){"use strict";var n={actions:{},assertions:{}};return new t({appId:"ztchcnf01.conf01",componentId:"ConfirmationsList",contextPath:"/Confirmations"},n)});
+//# sourceMappingURL=ConfirmationsList.js.map

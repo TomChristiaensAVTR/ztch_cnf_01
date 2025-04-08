@@ -1,6 +1,6 @@
 using { eagle.cnf01 as my } from '../db/schema.cds';
 
-using { NorthWind as external } from './external/NorthWind.csn';
+using { NorthWind as external } from './external/NorthWind';
 
 @path : '/service/catalog'
 service CatalogService
@@ -17,6 +17,16 @@ service CatalogService
             Rating,
             Price
         };
+/*
+    entity Orders as 
+        projection on external.Orders{
+            key OrderID,
+            CustomerID,
+            ShipName,
+            ShipCountry
+        };
+    }
+*/
 }
 
 annotate CatalogService with @requires :
@@ -27,6 +37,16 @@ annotate CatalogService with @requires :
 @path : '/service/admin'
 service admin
 {
+
+    @readonly
+    entity Orders as
+        projection on external.Customer
+        {
+            key ID,
+            Name,
+            PersonDetail
+        };
+
     @odata.draft.bypass
     @odata.draft.enabled
     entity CnfWorkTypes as
